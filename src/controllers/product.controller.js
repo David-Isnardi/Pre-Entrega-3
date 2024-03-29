@@ -1,8 +1,8 @@
 export const createProductController = async (req, res) => {
     try {
       const product = req.body
-      const result = await Product.create(product);
-      const products = await Product.find().lean().exec();
+      const result = await product.create(product);
+      const products = await product.find().lean().exec();
       req.io.emit('productList', products); // emite el evento updatedProducts con la lista de productos
       res.status(201).json({ status: 'success', payload: result });
     } catch (error) {
@@ -15,7 +15,7 @@ export const updateProductController = async (req, res) => {
       const productId = req.params.pid;
       const updatedFields = req.body;
   
-      const updatedProduct = await Product.findByIdAndUpdate(productId, updatedFields, {
+      const updatedProduct = await products.findByIdAndUpdate(productId, updatedFields, {
         new: true // Para devolver el documento actualizado
       }).lean().exec();
   
@@ -24,7 +24,7 @@ export const updateProductController = async (req, res) => {
         return;
       }
   
-      const products = await Product.find().lean().exec();
+      const products = await products.find().lean().exec();
   
       req.io.emit('productList', products);
   
@@ -39,14 +39,14 @@ export const deleteProductController = async (req, res) => {
     try {
       const productId = req.params.pid;
   
-      const deletedProduct = await Product.findByIdAndDelete(productId).lean().exec();
+      const deletedProduct = await products.findByIdAndDelete(productId).lean().exec();
   
       if (!deletedProduct) {
         res.status(404).json({ error: 'Producto no encontrado' });
         return;
       }
   
-      const products = await Product.find().lean().exec();
+      const products = await products.find().lean().exec();
   
       req.io.emit('productList', products);
   
@@ -60,7 +60,7 @@ export const deleteProductController = async (req, res) => {
 export const readProductController = async (req, res) => {
     const id = req.params.pid;
     try {
-      const product = await Product.findById(id).lean().exec();
+      const product = await product.findById(id).lean().exec();
       if (product) {
         res.status(200).json(product);
       } else {
